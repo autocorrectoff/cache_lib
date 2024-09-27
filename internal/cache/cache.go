@@ -37,10 +37,24 @@ func (c *Cache[K, V]) Set(key K, value V) {
 		return
 	}
 
-	// Insert the new item
+	if len(c.items) >= c.capacity {
+		// Remove the least recently used item
+		c.evictOldest()
+	}
+
+	// Add new entry
 	ent := &entry[K, V]{key, value}
 	el := c.evict.PushFront(ent)
 	c.items[key] = el
+}
+
+func (c *Cache[K, V]) evictOldest() {
+	el := c.evict.Back()
+	if el != nil {
+		ent := el.Value.(*entry[K, V])
+		delete(c.items, ent.key)
+		c.evict.Remove(el)
+	}
 }
 
 
