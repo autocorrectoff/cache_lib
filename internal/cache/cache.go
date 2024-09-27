@@ -80,4 +80,10 @@ func (c *Cache[K, V]) Delete(key K) {
 	}
 }
 
+func (c *Cache[K, V]) Len() int {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return len(c.items)
+}
+
 
