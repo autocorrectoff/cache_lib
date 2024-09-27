@@ -85,5 +85,3 @@ func (c *Cache[K, V]) Len() int {
 	defer c.mu.Unlock()
 	return len(c.items)
 }
-
-
