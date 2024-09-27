@@ -70,4 +70,14 @@ func (c *Cache[K, V]) Get(key K) (V, bool) {
 	return zero, false
 }
 
+func (c *Cache[K, V]) Delete(key K) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	if el, ok := c.items[key]; ok {
+		c.evict.Remove(el)
+		delete(c.items, key)
+	}
+}
+
 
