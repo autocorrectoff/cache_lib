@@ -57,4 +57,17 @@ func (c *Cache[K, V]) evictOldest() {
 	}
 }
 
+func (c *Cache[K, V]) Get(key K) (V, bool) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	if el, ok := c.items[key]; ok {
+		c.evict.MoveToFront(el)
+		return el.Value.(*entry[K, V]).value, true
+	}
+
+	var zero V
+	return zero, false
+}
+
 
